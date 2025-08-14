@@ -4,13 +4,12 @@ import viteLogo from "/vite.svg";
 import "./App.css";
 import NavBar from "./Navbar";
 import { Outlet } from "react-router-dom";
+import Body from "./Body";
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
     <>
-      <NavBar />
+      <Body />
       <div className="p-4">
         <Outlet />
       </div>
