@@ -20,8 +20,8 @@ export default function Login() {
               placeholder="Enter Your Password"
             />
           </fieldset>
-          <div className="card-actions justify-end">
-            <button className="btn btn-primary">Login</button>
+          <div className="card-actions flex justify-center">
+            <button className="btn btn-primary  ">Login</button>
           </div>
         </div>
       </div>
