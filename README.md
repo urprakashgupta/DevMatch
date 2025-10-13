@@ -5,7 +5,7 @@
 </p>
 
 <p align="center">
-  <img width = "600" alt= "DevMatch Tech Stack" src = "./frontend/public/tech-stack.png"/>
+  <img width = "600" alt= "DevMatch Tech Stack" src = "./Frontend/public/tech-stack.png"/>
 </p>
 
 <br>
