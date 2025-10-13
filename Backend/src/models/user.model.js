@@ -16,6 +16,26 @@ const userSchema = new Schema({
     emailId: {
         type: String,
         lowercase: true,
-        require: true
+        require: true,
+        unique: true,
+        trim: true
+    },
+    password: {
+        type: String,
+        required: true
+    },
+    age: {
+        type: Number,
+        required: false,
+        min: 18
+    },
+    gender: {
+        type: String,
+        required: false,
+        trim: true
     }
-})
+
+});
+
+
+export const User = mongoose.model("User", userSchema);
