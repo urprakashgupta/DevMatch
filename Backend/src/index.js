@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser';
 import User from './models/user.models.js'
 import connectDB from './config/database.js';
 import { validateSignupData } from './utils/validation.js';
+import userAuth from './middlewares/auth.js';
 dotenv.config();
 const app = express();
 app.use(express.json());
@@ -60,17 +61,9 @@ app.post('/login', async (req, res) => {
 })
 
 // Route for getting profile
-app.get('/profile', async (req, res) => {
+app.get('/profile', userAuth, async (req, res) => {
     try {
-        const cookies = req.cookies;
-        const token = cookies.token;
-
-        //validate my token
-        const decodedMessage = await jwt.verify(token, process.env.JWT_SECRET);
-
-        const { id } = decodedMessage;
-
-        const user = await User.findById(id);
+        const user = req.user;
         res.send(user);
     } catch (err) {
         res.status(401).send("Unauthorized: " + err.message);
