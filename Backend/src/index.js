@@ -1,12 +1,15 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
+import cookieParser from 'cookie-parser';
 import User from './models/user.models.js'
 import connectDB from './config/database.js';
 import { validateSignupData } from './utils/validation.js';
 dotenv.config();
 const app = express();
 app.use(express.json());
+app.use(cookieParser());
 
 // Route for user signup
 app.post('/signup', async (req, res) => {
@@ -46,13 +49,33 @@ app.post('/login', async (req, res) => {
         if (!isMatch) {
             return res.status(401).send("Invalid credentials");
         }
-
+        // create a JWT token
+        const token = await jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        // add the token to cookie and send the response back to user
+        res.cookie('token', token);
         res.status(200).send("Login successful");
     } catch (err) {
         res.status(500).send("Error while login :" + err.message);
     }
 })
 
+// Route for getting profile
+app.get('/profile', async (req, res) => {
+    try {
+        const cookies = req.cookies;
+        const token = cookies.token;
+
+        //validate my token
+        const decodedMessage = await jwt.verify(token, process.env.JWT_SECRET);
+
+        const { id } = decodedMessage;
+
+        const user = await User.findById(id);
+        res.send(user);
+    } catch (err) {
+        res.status(401).send("Unauthorized: " + err.message);
+    }
+})
 // Route for fetching all users
 app.get('/feed', async (req, res) => {
     try {
