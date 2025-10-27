@@ -1,20 +1,55 @@
 import express from 'express';
 import dotenv from 'dotenv';
+import bcrypt from 'bcryptjs';
 import User from './models/user.models.js'
 import connectDB from './config/database.js';
-
+import { validateSignupData } from './utils/validation.js';
 dotenv.config();
 const app = express();
 app.use(express.json());
 
 // Route for user signup
 app.post('/signup', async (req, res) => {
+
     try {
-        const user = new User(req.body);
+        //validation of data
+        validateSignupData(req);
+        const { firstName, lastName, email } = req.body;
+
+        // Encrypt password before saving 
+        const password = req.body.password;
+        const hashPassword = await bcrypt.hash(password, 10);
+
+        const user = new User({
+            firstName,
+            lastName,
+            email,
+            password: hashPassword,
+        });
         await user.save();
         res.status(201).send("User signed up successfully");
     } catch (err) {
         res.status(400).send("Error while signup :" + err.message);
+    }
+})
+
+// Route for login User
+app.post('/login', async (req, res) => {
+    const { email, password } = req.body;
+    try {
+        const user = await User.findOne({ email });
+        if (!user) {
+            return res.status(404).send("User not found");
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            return res.status(401).send("Invalid credentials");
+        }
+
+        res.status(200).send("Login successful");
+    } catch (err) {
+        res.status(500).send("Error while login :" + err.message);
     }
 })
 
