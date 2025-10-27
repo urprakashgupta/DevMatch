@@ -51,7 +51,7 @@ app.post('/login', async (req, res) => {
             return res.status(401).send("Invalid credentials");
         }
         // create a JWT token
-        const token = await jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
         // add the token to cookie and send the response back to user
         res.cookie('token', token);
         res.status(200).send("Login successful");
@@ -67,6 +67,16 @@ app.get('/profile', userAuth, async (req, res) => {
         res.send(user);
     } catch (err) {
         res.status(401).send("Unauthorized: " + err.message);
+    }
+})
+
+// Route for sendingConnectionRequest
+app.post('/sendConnectionRequest', userAuth, async (req, res) => {
+    try {
+        const user = req.user;
+        res.send(user.firstName + " sent the connection request")
+    } catch (error) {
+        res.status(500).send("Error while sending request : " + error.message)
     }
 })
 // Route for fetching all users
