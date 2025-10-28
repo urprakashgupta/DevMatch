@@ -7,58 +7,15 @@ import User from './models/user.models.js'
 import connectDB from './config/database.js';
 import { validateSignupData } from './utils/validation.js';
 import userAuth from './middlewares/auth.js';
+import authRouter from './routes/auth.js'
 dotenv.config();
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-// Route for user signup
-app.post('/signup', async (req, res) => {
+// Auth Routes
+app.use('/auth', authRouter);
 
-    try {
-        //validation of data
-        validateSignupData(req);
-        const { firstName, lastName, email } = req.body;
-
-        // Encrypt password before saving 
-        const password = req.body.password;
-        const hashPassword = await bcrypt.hash(password, 10);
-
-        const user = new User({
-            firstName,
-            lastName,
-            email,
-            password: hashPassword,
-        });
-        await user.save();
-        res.status(201).send("User signed up successfully");
-    } catch (err) {
-        res.status(400).send("Error while signup :" + err.message);
-    }
-})
-
-// Route for login User
-app.post('/login', async (req, res) => {
-    const { email, password } = req.body;
-    try {
-        const user = await User.findOne({ email });
-        if (!user) {
-            return res.status(404).send("User not found");
-        }
-
-        const isMatch = await user.validatePassword(password);
-        if (!isMatch) {
-            return res.status(401).send("Invalid credentials");
-        }
-        // create a JWT token
-        const token = await user.getJWT();
-        // add the token to cookie and send the response back to user
-        res.cookie('token', token);
-        res.status(200).send("Login successful");
-    } catch (err) {
-        res.status(500).send("Error while login :" + err.message);
-    }
-})
 
 // Route for getting profile
 app.get('/profile', userAuth, async (req, res) => {
