@@ -46,12 +46,12 @@ app.post('/login', async (req, res) => {
             return res.status(404).send("User not found");
         }
 
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = await user.validatePassword(password);
         if (!isMatch) {
             return res.status(401).send("Invalid credentials");
         }
         // create a JWT token
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '1h' });
+        const token = await user.getJWT();
         // add the token to cookie and send the response back to user
         res.cookie('token', token);
         res.status(200).send("Login successful");
