@@ -1,11 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import cookieParser from 'cookie-parser';
-import User from './models/user.models.js'
 import connectDB from './config/database.js';
-import { validateSignupData } from './utils/validation.js';
 import userAuth from './middlewares/auth.js';
 import authRouter from './routes/auth.js'
 import profileRouter from './routes/profile.js'
