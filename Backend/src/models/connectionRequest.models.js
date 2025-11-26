@@ -22,6 +22,8 @@ const connectionRequestSchema = new Schema(
     { timestamps: true }
 );
 
+connectionRequestSchema.index({ fromUserId: 1, toUserId: 1 }, { unique: true });
+
 connectionRequestSchema.pre("save", function (next) {
     const connectionRequest = this;
 
