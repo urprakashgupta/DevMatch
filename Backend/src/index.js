@@ -1,10 +1,11 @@
-import express from 'express';
+import express, { request } from 'express';
 import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import connectDB from './config/database.js';
 import userAuth from './middlewares/auth.js';
 import authRouter from './routes/auth.js'
-import profileRouter from './routes/profile.js'
+import profileRouter from './routes/profile.js';
+import requestRouter from './routes/request.js'
 dotenv.config();
 const app = express();
 app.use(express.json());
@@ -18,14 +19,7 @@ app.use('/profile', profileRouter);
 
 
 // Route for sendingConnectionRequest
-app.post('/sendConnectionRequest', userAuth, async (req, res) => {
-    try {
-        const user = req.user;
-        res.send(user.firstName + " sent the connection request")
-    } catch (error) {
-        res.status(500).send("Error while sending request : " + error.message)
-    }
-})
+app.use('/sendConnectionRequest', requestRouter)
 
 
 connectDB()
