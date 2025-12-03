@@ -19,7 +19,7 @@ app.use('/profile', profileRouter);
 
 
 // Route for sendingConnectionRequest
-app.use('/sendConnectionRequest', requestRouter)
+app.use('/request', requestRouter)
 
 
 connectDB()

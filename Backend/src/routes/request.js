@@ -5,7 +5,7 @@ import userAuth from '../middlewares/auth.js';
 import User from '../models/user.models.js';
 import ConnectionRequest from '../models/connectionRequest.models.js'
 
-router.post("/request/send/:status/:toUserId", userAuth, async (req, res) => {
+router.post("/send/:status/:toUserId", userAuth, async (req, res) => {
     try {
         const fromUserId = req.user._id;
         const toUserId = req.params.toUserId;
@@ -61,6 +61,38 @@ router.post("/request/send/:status/:toUserId", userAuth, async (req, res) => {
         res.status(400).send('ERROR: ' + err.message);
     }
 })
+
+router.post("/review/:status/:requestId", userAuth, async (req, res) => {
+    try {
+        const loggedInUser = req.user;
+        const { status, requestId } = req.params;
+
+        const allowedStatus = ['accepted', 'rejected'];
+        if (!allowedStatus.includes(status)) {
+            return res.status(400).json("Invalid status types : " + status);
+        }
+        const connectionRequest = await ConnectionRequest.findOne({
+            _id: requestId,
+            toUserId: loggedInUser._id,
+            status: 'interested',
+        });
+
+        if (!connectionRequest) {
+            return res.status(404).json({ message: 'Connection request not found' });
+        }
+
+        connectionRequest.status = status;
+        const data = await connectionRequest.save();
+
+        res.json({
+            message: "Connection request " + status,
+            data
+        })
+
+    } catch (error) {
+        res.status(400).send('Error: ' + error.message);
+    }
+});
 
 
 export default router;
