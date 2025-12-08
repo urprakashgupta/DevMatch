@@ -5,7 +5,8 @@ import connectDB from './config/database.js';
 import userAuth from './middlewares/auth.js';
 import authRouter from './routes/auth.js'
 import profileRouter from './routes/profile.js';
-import requestRouter from './routes/request.js'
+import requestRouter from './routes/request.js';
+import userRouter from './routes/user.js'
 dotenv.config();
 const app = express();
 app.use(express.json());
@@ -19,7 +20,10 @@ app.use('/profile', profileRouter);
 
 
 // Route for sendingConnectionRequest
-app.use('/request', requestRouter)
+app.use('/request', requestRouter);
+
+//Route for userRouter
+app.use('/user', userRouter);
 
 
 connectDB()
