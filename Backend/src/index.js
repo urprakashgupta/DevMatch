@@ -6,8 +6,13 @@ import userAuth from './middlewares/auth.js';
 import authRouter from './routes/auth.js'
 import profileRouter from './routes/profile.js';
 import requestRouter from './routes/request.js';
-import userRouter from './routes/user.js'
+import userRouter from './routes/user.js';
+import cors from 'cors';
 dotenv.config();
+app.use(cors({
+    origin: "http://localhost:5173",
+    credentials: true
+}))
 const app = express();
 app.use(express.json());
 app.use(cookieParser());
