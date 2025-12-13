@@ -2,15 +2,20 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const Login = () => {
-  const [emailId, setEmailId] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("prakash@gmail.com");
+  const [password, setPassword] = useState("Prakash@2004");
 
   const handleLogin = async () => {
+    console.log("Clicked ✅");
     try {
-      const res = await axios.post("http://localhost:5000/auth/login", {
-        emailId,
-        password,
-      });
+      const res = await axios.post(
+        "http://localhost:5000/auth/login",
+        {
+          email,
+          password,
+        },
+        { withCredentials: true }
+      );
     } catch (error) {
       console.log(error);
     }
@@ -26,9 +31,9 @@ const Login = () => {
           type="email"
           className="input"
           placeholder="Email"
-          value={emailId}
+          value={email}
           onChange={(e) => {
-            setEmailId(e.target.value);
+            setEmail(e.target.value);
           }}
         />
 
