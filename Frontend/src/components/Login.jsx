@@ -16,6 +16,7 @@ const Login = () => {
         },
         { withCredentials: true }
       );
+      console.log(res);
     } catch (error) {
       console.log(error);
     }
