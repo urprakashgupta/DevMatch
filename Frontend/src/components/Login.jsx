@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addUser } from "../utils/userSlice";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants.js";
 
 const Login = () => {
@@ -10,6 +10,11 @@ const Login = () => {
   const [password, setPassword] = useState("Prakash@2004");
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const user = useSelector((store) => store.user);
+
+  if (user) {
+    return <Navigate to="/feed" replace />;
+  }
 
   const handleLogin = async () => {
     console.log("Clicked ✅");
